@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        .form-container, .table-container {
+            background-color: #fff;
+            padding: 20px;
+            margin: 20px auto;
+            width: 80%;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px #aaa;
+        }
+
+        input {
+            display: block;
+            margin: 10px 0;
+            padding: 8px;
+            width: 95%;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .actions button {
+            margin: 2px;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Student Management System</h1>
+
+    <!-- Add Student Form -->
+    <div class="form-container">
+        <h2>Add / Update Student</h2>
+        <input type="text" id="studentId" placeholder="Student ID">
+        <input type="text" id="studentName" placeholder="Name">
+        <input type="text" id="studentClass" placeholder="Class">
+        <input type="number" id="studentAge" placeholder="Age">
+        <button onclick="addOrUpdateStudent()">Submit</button>
+    </div>
+
+    <!-- Student List Table -->
+    <div class="table-container">
+        <h2>Student List</h2>
+        <table id="studentTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th>Age</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Students will appear here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let students = [];
+
+        function addOrUpdateStudent() {
+            let id = document.getElementById("studentId").value;
+            let name = document.getElementById("studentName").value;
+            let cls = document.getElementById("studentClass").value;
+            let age = document.getElementById("studentAge").value;
+
+            if (!id || !name || !cls || !age) {
+                alert("Please fill all fields!");
+                return;
+            }
+
+            // Check if student exists
+            let existingIndex = students.findIndex(s => s.id === id);
+            if (existingIndex >= 0) {
+                // Update student
+                students[existingIndex] = { id, name, cls, age };
+            } else {
+                // Add new student
+                students.push({ id, name, cls, age });
+            }
+
+            clearForm();
+            displayStudents();
+        }
+
+        function displayStudents() {
+            let tbody = document.querySelector("#studentTable tbody");
+            tbody.innerHTML = "";
+            students.forEach((student, index) => {
+                let row = `<tr>
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td>${student.cls}</td>
+                    <td>${student.age}</td>
+                    <td class="actions">
+                        <button onclick="editStudent(${index})">Edit</button>
+                        <button onclick="deleteStudent(${index})">Delete</button>
+                    </td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        function editStudent(index) {
+            let student = students[index];
+            document.getElementById("studentId").value = student.id;
+            document.getElementById("studentName").value = student.name;
+            document.getElementById("studentClass").value = student.cls;
+            document.getElementById("studentAge").value = student.age;
+        }
+
+        function deleteStudent(index) {
+            if (confirm("Are you sure you want to delete this student?")) {
+                students.splice(index, 1);
+                displayStudents();
+            }
+        }
+
+        function clearForm() {
+            document.getElementById("studentId").value = "";
+            document.getElementById("studentName").value = "";
+            document.getElementById("studentClass").value = "";
+            document.getElementById("studentAge").value = "";
+        }
+    </script>
+</body>
+</html>
